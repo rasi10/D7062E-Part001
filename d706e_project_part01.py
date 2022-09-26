@@ -1,7 +1,12 @@
 """
 Module to preprocess data. Partial requirement for course
 D7062E - Artificial Intelligence and Pattern Recognition
-LTU - Fall 2022 - Group 8
+LTU - Fall 2022 - Group 8:
+- Alejandro Oliveros
+- Emmanouil Manouselis
+- Georgios Savvidis
+- Johan Bini
+- Rafael Silva
 """
 import numpy as np
 import pandas as pd
@@ -272,7 +277,7 @@ def preprocess_data_dropping_missing_values(input_csv_file):
     # https://builtin.com/machine-learning/how-to-preprocess-data-python
     dataframe = dataframe.dropna()
 
-    # return the result
+    # return the result dataframe
     return dataframe
 
 
@@ -311,20 +316,10 @@ def preprocess_data_filling_out_missing_values(input_csv_file):
         lambda x: x.fillna(
             x.mean()))
 
-    """
-    Use this code to test the values for column 9
-    print(dataframe["Column09"].loc[12:15])
-    grouped_series = dataframe.groupby(['Label_as_string'])[['Column08', 'Column09', 'Column10']].mean()
-    print(grouped_series.loc['baby']['Column09'])
-    print(grouped_series.loc['strong']['Column09'])
-    print(grouped_series.loc['big']['Column09'])
-    print(grouped_series.loc['cloud']['Column09'])
-    """
-
     # Remove unecessary columns
     dataframe = dataframe.drop(dataframe.columns[[240]], axis=1)
 
-    # return the result
+    # return the result dataframe
     return dataframe
 
 
@@ -332,15 +327,15 @@ def preprocess_data_filling_out_missing_values(input_csv_file):
 Entrypoint.
 """
 if __name__ == "__main__":
-    INPUT_FILE = 'train-final.csv'
-
     """ Running the method by filling out the missing values with the mean of the group """
+    INPUT_FILE = 'train-final.csv'
     preprocessed_data = preprocess_data_filling_out_missing_values(INPUT_FILE)
     print(preprocessed_data.info())
     print(preprocessed_data)
     # print(preprocessed_data["Column09"].loc[12:15])
 
     """ Running the method of discarding all rows that has a NaN value
+    INPUT_FILE = 'train-final.csv'
     preprocessed_data = preprocess_data_dropping_missing_values(INPUT_FILE)
     print(preprocessed_data.iloc[11, 0:10].values)
     print(preprocessed_data.info())
