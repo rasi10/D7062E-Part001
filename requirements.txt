@@ -1,0 +1,6 @@
+numpy
+matplotlib
+pandas
+sklearn
+autopep8
+pylint
