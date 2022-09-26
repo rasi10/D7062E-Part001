@@ -8,8 +8,7 @@ import pandas as pd
 from sklearn.impute import SimpleImputer
 
 """
-Function to preprocess the input data by dropping rows
-with missing values
+Preprocesses the input data by dropping rows with missing values.
 """
 
 
@@ -29,8 +28,7 @@ def preprocess_data_dropping_missing_values(input_csv_file):
 
 
 """
-Function to preprocess the input data by dropping filling out
-missing values with the mean of the values for a given column.
+Preprocesses the input data by filling out rows with mean values.
 """
 
 
@@ -50,6 +48,9 @@ def preprocess_data_filling_out_missing_values(input_csv_file):
     return new_dataframe
 
 
+"""
+Entrypoint.
+"""
 if __name__ == "__main__":
     INPUT_FILE = 'train-final.csv'
     """ Uncomment until line 57 to run the method of dropping rows with missing values
