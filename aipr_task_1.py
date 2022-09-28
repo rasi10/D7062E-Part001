@@ -1,8 +1,31 @@
 # -*- coding: utf-8 -*-
 
+"""
+Module to preprocess data. Partial requirement for course
+D7062E - Artificial Intelligence and Pattern Recognition
+LTU - Fall 2022 - Group 8:
+- Alejandro Oliveros
+- Emmanouil Manouselis
+- Georgios Savvidis
+- Johan Bini
+- Rafael Silva
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
+def get_dataframe_with_column_names(input_csv_file):
+    col_names = []
+    for x in range(1, 241):
+        col_names.append('Column' + str(x))
+
+    col_names.append('Label_as_string')
+    col_names.append('Label_as_number')
+
+    dataframe = pd.read_csv(input_csv_file, header=None)
+    dataframe.columns = col_names
+    return dataframe
 
 
 def pre_process(myframe: pd.core.frame.DataFrame, mystrategy: int):
@@ -13,7 +36,8 @@ def pre_process(myframe: pd.core.frame.DataFrame, mystrategy: int):
     elif mystrategy == 2:
         # Drop all lines in which numerucal label is missing
         df2 = df.dropna(subset=[df.columns[-1]])
-        # Fill missing value with the mean of the column for all but last two columns
+        # Fill missing value with the mean of the column for all but last two
+        # columns
         df2.iloc[:, :-2] = df2.iloc[:, :-2].fillna(df2.iloc[:, :-2].mean())
 
     elif mystrategy == 3:
@@ -29,8 +53,13 @@ def pre_process(myframe: pd.core.frame.DataFrame, mystrategy: int):
     return df2
 
 
-# Defining a function to vizualize a single row in a 2-D graph (Z-dimennsion is depth)
-def viz_gesture(vizframe: pd.core.frame.DataFrame, points: int, row2viz: int, links: list):
+# Defining a function to vizualize a single row in a 2-D graph
+# (Z-dimennsion is depth)
+def viz_gesture(
+        vizframe: pd.core.frame.DataFrame,
+        points: int,
+        row2viz: int,
+        links: list):
     g = vizframe.iloc[row2viz]
     xx = g[::3][0:int(points)].tolist()
     yy = g[1::3][0:int(points)].tolist()
@@ -48,49 +77,64 @@ def viz_gesture(vizframe: pd.core.frame.DataFrame, points: int, row2viz: int, li
     return 0
 
 
-# Defining function (process) to vizualize a gesture by label from the groupped dataframe
-def viz_gesture_group(vizframe: pd.core.frame.DataFrame, points: int, links: list, gesture: str):
+# Defining function (process) to vizualize a gesture by label from the
+# groupped dataframe
+def viz_gesture_group(
+        vizframe: pd.core.frame.DataFrame,
+        points: int,
+        links: list,
+        gesture: str):
     gg = vizframe[vizframe[240] == gesture]
-    viz_gesture(gg, points, 0, links);
+    viz_gesture(gg, points, 0, links)
 
 
-# links array is used to code-in the interconnection between the different joints of the body
-links = [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]]
+# links array is used to code-in the interconnection between the different
+# joints of the body
+def get_interconnection_list():
+    links = [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0]]
+    return links
 
-# Import the dataset.
-df = pd.read_csv(filepath_or_buffer="train-final.csv", header=None)
 
-# Lines which contain at least one NaN
-null_data = df[df.isnull().any(axis=1)]
+if __name__ == "__main__":
+    # Constant with the path to the input file
+    INPUT_TRAIN_FILE = 'train-final.csv'
+    # Import the dataset.
+    df = pd.read_csv(filepath_or_buffer=INPUT_TRAIN_FILE, header=None)
 
-# pre-processing
-dfpp = pre_process(df, 3)
+    # Get the interconnection list
+    links = get_interconnection_list()
 
-# grouping by label string
-dfppg = dfpp.groupby([240], as_index=False).mean()
-dfppg = dfppg.reindex(columns=sorted(dfppg.columns))
+    # Lines which contain at least one NaN
+    null_data = df[df.isnull().any(axis=1)]
 
-# try viz_gesture function  for row 6
-viz_gesture(dfpp, 20, 6, links);
+    # pre-processing
+    dfpp = pre_process(df, 3)
 
-# try viz_gesture_group function
-viz_gesture_group(dfppg, 20, links, 'love')
+    # grouping by label string
+    dfppg = dfpp.groupby([240], as_index=False).mean()
+    dfppg = dfppg.reindex(columns=sorted(dfppg.columns))
+
+    # try viz_gesture function  for row 6
+    viz_gesture(dfpp, 20, 6, links)
+
+    # try viz_gesture_group function
+    viz_gesture_group(dfppg, 20, links, 'love')
