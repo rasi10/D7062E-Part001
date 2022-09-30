@@ -154,7 +154,7 @@ if __name__ == "__main__":
     null_data = df[df.isnull().any(axis=1)]
 
     # pre-processing
-    dfpp = pre_process(df, 3)
+    dfpp = pre_process(df, 3, True, True)
 
     # grouping by label string
     dfppg = dfpp.groupby([240], as_index=False).mean()
