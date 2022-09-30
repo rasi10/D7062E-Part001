@@ -28,7 +28,37 @@ def get_dataframe_with_column_names(input_csv_file):
     return dataframe
 
 
-def pre_process(myframe: pd.core.frame.DataFrame, mystrategy: int):
+def pre_process(myframe: pd.core.frame.DataFrame, mystrategy: int, centering: bool, scaling: bool):
+    # create a copy of input dataframe
+    df2 = myframe.copy()
+
+    # define columns containing x,y,z coordinates
+    colsx = df.columns[0::3][0:20]
+    colsy = df.columns[1::3][0:20]
+    colsz = df.columns[2::3][0:20]
+
+    if centering:
+        # Center all gesture datapoints
+        # Calculate centroid of each datapoint and save its cx,cy,cz in the pre-processed dataframe
+        df2['cx'] = df2[colsx].mean(axis=1).tolist()
+        df2['cy'] = df2[colsy].mean(axis=1).tolist()
+        df2['cz'] = df2[colsz].mean(axis=1).tolist()
+        # For each row, subtract centroid from each point
+        df2[colsx] = df2[colsx].sub(df2['cx'], axis=0)
+        df2[colsy] = df2[colsy].sub(df2['cy'], axis=0)
+        df2[colsz] = df2[colsz].sub(df2['cz'], axis=0)
+
+    if scaling:
+        # Scale all gesture datapoints
+        # Calculate the width, height and depth of each datapoint and store value in columns w,h,d
+        df2['w'] = (df2[colsx].max(axis=1) - df2[colsx].min(axis=1)).tolist()
+        df2['h'] = (df2[colsy].max(axis=1) - df2[colsy].min(axis=1)).tolist()
+        df2['d'] = (df2[colsz].max(axis=1) - df2[colsz].min(axis=1)).tolist()
+        # Scale the coordinates of each point based on the above values
+        df2[colsx] = df2[colsx].div(df2['w'], axis=0)
+        df2[colsy] = df2[colsy].div(df2['h'], axis=0)
+        df2[colsz] = df2[colsz].div(df2['d'], axis=0)
+    
     if mystrategy == 1:
         # Drop all lines that contain at least 1 NaN value
         df2 = myframe.dropna()
@@ -46,9 +76,6 @@ def pre_process(myframe: pd.core.frame.DataFrame, mystrategy: int):
         c = df2.columns[df2.isnull().any(axis=0)]
         for ci in c:
             df2[ci] = df2[ci].fillna(df2.groupby(240)[ci].transform('mean'))
-
-    else:
-        df2 = myframe.copy()
 
     return df2
 
@@ -131,7 +158,7 @@ if __name__ == "__main__":
 
     # grouping by label string
     dfppg = dfpp.groupby([240], as_index=False).mean()
-    dfppg = dfppg.reindex(columns=sorted(dfppg.columns))
+    dfppg.insert(240, 240, dfppg.pop(240))
 
     # try viz_gesture function  for row 6
     viz_gesture(dfpp, 20, 6, links)
